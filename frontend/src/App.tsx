@@ -1,13 +1,13 @@
-
-import './App.css'
+import Chatbot from "./components/Chatbot";
 
 function App() {
   return (
-    <div className="h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-3xl font-bold text-blue-600">
-        App is Working!!
-      </h1>
+    <div className="min-h-screen bg-[url('./assets/nestle-bg-image.png')] bg-cover bg-center">
+      <div className="min-h-screen">
+        <Chatbot />
+      </div>
     </div>
   );
 }
+
 export default App;
