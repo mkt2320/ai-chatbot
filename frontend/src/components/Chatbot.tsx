@@ -2,6 +2,7 @@ import { useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
+import { sendChatMessage } from "../api/chat";
 
 export type Message = {
   sender: "bot" | "user";
@@ -19,6 +20,7 @@ const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState<Message[]>([defaultBotIntro]);
+  const [showTyping, setShowTyping] = useState(false);
 
   const toggleChat = () => setIsOpen(true);
 
@@ -32,23 +34,35 @@ const Chatbot = () => {
     setIsOpen(false);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
-    setChatHistory((prev) => [...prev, { sender: "user", text: input }]);
+
+    const userMessage: Message = { sender: "user", text: input };
+    setChatHistory((prev) => [...prev, userMessage]);
     setInput("");
-    setTimeout(() => {
+    setShowTyping(true);
+
+    try {
+      const { reply, references } = await sendChatMessage(input);
+
+      const botMessage: Message = {
+        sender: "bot",
+        text: reply,
+        references,
+      };
+
+      setTimeout(() => {
+        setChatHistory((prev) => [...prev, botMessage]);
+        setShowTyping(false);
+      }, 600);
+    } catch (error) {
+      console.error("Error contacting chatbot:", error);
       setChatHistory((prev) => [
         ...prev,
-        {
-          sender: "bot",
-          text: `Here’s a placeholder answer to: **${input}** 🧠`,
-          references: [
-            "https://www.madewithnestle.ca/recipes",
-            "https://www.madewithnestle.ca/brands",
-          ],
-        },
+        { sender: "bot", text: "Sorry, something went wrong." },
       ]);
-    }, 1000);
+      setShowTyping(false);
+    }
   };
 
   return (
@@ -65,9 +79,9 @@ const Chatbot = () => {
           </span>
         </button>
       ) : (
-        <div className="w-96 h-[500px] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-300 animate-fade-in">
+        <div className="w-96 max-w-[90vw] h-[500px] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-300 animate-slide-up">
           <ChatHeader onClose={handleClose} onMinimize={handleMinimize} />
-          <ChatMessages messages={chatHistory} />
+          <ChatMessages messages={chatHistory} showTyping={showTyping} />
           <ChatInput
             input={input}
             onInputChange={setInput}
