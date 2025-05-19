@@ -2,3 +2,8 @@ venv/
 __pycache__/
 *.pyc
 .env
+# Scraped data output
+scraper/.pw_profile/
+scraper/scraped_data/
+# Discovered links and crawling output
+scraper/crawled_data/
