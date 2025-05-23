@@ -7,3 +7,6 @@ scraper/.pw_profile/
 scraper/scraped_data/
 # Discovered links and crawling output
 scraper/crawled_data/
+# Ignore FAISS index and metadata
+embeddings/index.faiss
+embeddings/index_metadata.json
