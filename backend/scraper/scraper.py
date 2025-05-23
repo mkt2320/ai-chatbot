@@ -3,7 +3,7 @@ import os
 import json
 from pathlib import Path
 from urllib.parse import urlparse
-from datetime import datetime
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from playwright.async_api import async_playwright
 
@@ -66,7 +66,7 @@ async def scrape_page(page, url: str):
         data = {
             "url": url,
             "title": title,
-            "scraped_at": datetime.utcnow().isoformat(),
+            "scraped_at": datetime.now(timezone.utc).isoformat(),
             "paragraphs": paragraphs,
             "links": links,
             "images": images,
