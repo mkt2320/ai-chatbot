@@ -1,29 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from schemas import ChatbotRequest, ChatbotResponse
+from api.chat import router as chat_router
+from api.refresh import router as refresh_router
 
 app = FastAPI()
 
-# Allow frontend access to backend API 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# POST /chat endpoint: returns placeholder chatbot response
-@app.post("/chat", response_model=ChatbotResponse)
-def chatbot_endpoint(request: ChatbotRequest):
-    return ChatbotResponse(
-        reply=(
-            "For Christmas, you might consider the following gift ideas from Nestlé:\n\n"
-            "1. **KITKAT Advent Calendar**: Countdown to Christmas with KITKAT treats. [Buy in Store](https://www.madewithnestle.ca/kitkat) [1]\n"
-            "2. **Quality Street Holiday Tin**: Perfect for sharing. [See all products](https://www.madewithnestle.ca/quality-street) [2]"
-        ),
-        references=[
-            "https://www.madewithnestle.ca/kitkat",
-            "https://www.madewithnestle.ca/quality-street"
-        ]
-    )
+app.include_router(chat_router)
+app.include_router(refresh_router)
