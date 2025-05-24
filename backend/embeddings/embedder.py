@@ -33,7 +33,8 @@ for file_path in SCRAPED_DIR.glob("*.json"):
             embedding_vectors.append(embedding.tolist())
             metadata_records.append({
                 "source": url,
-                "content": para
+                "content": para,
+                "embedding": embedding.tolist()
             })
 
 # Build FAISS index
