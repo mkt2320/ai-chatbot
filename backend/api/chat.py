@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from schemas import ChatbotRequest, ChatbotResponse
+from models.chat import ChatbotRequest, ChatbotResponse
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import json
@@ -16,11 +16,16 @@ with open(META_PATH, "r", encoding="utf-8") as f:
     metadata = json.load(f)
 
 # Prepare normalized embeddings
-stored_embeddings = np.array([entry["embedding"] for entry in metadata]).astype("float32")
-stored_embeddings = stored_embeddings / np.linalg.norm(stored_embeddings, axis=1, keepdims=True)
+stored_embeddings = np.array([entry["embedding"] for entry in metadata]).astype(
+    "float32"
+)
+stored_embeddings = stored_embeddings / np.linalg.norm(
+    stored_embeddings, axis=1, keepdims=True
+)
 
 SIMILARITY_THRESHOLD = 0.4
 TOP_K = 5
+
 
 @router.post("/chat", response_model=ChatbotResponse)
 def chatbot_endpoint(request: ChatbotRequest):
@@ -62,10 +67,12 @@ def chatbot_endpoint(request: ChatbotRequest):
     if not reply_chunks:
         return ChatbotResponse(
             reply="I'm sorry, I couldn't find anything relevant. Please try rephrasing your question.",
-            references=[]
+            references=[],
         )
 
     reply = "\n\n".join(reply_chunks)
-    sorted_sources = [url for url, _ in sorted(reference_map.items(), key=lambda item: item[1])]
+    sorted_sources = [
+        url for url, _ in sorted(reference_map.items(), key=lambda item: item[1])
+    ]
 
     return ChatbotResponse(reply=reply, references=sorted_sources)
