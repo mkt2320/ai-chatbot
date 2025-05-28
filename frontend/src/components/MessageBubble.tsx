@@ -35,7 +35,7 @@ const MessageBubble = ({ sender, text, references }: MessageBubbleProps) => {
         </div>
 
         {/* References (bot only) */}
-        {!isUser && references && (
+        {!isUser && references && references.length > 0 && (
           <div className="mt-2 flex items-center gap-2 pl-1">
             <span className="text-xs text-nestle">References:</span>
             <div className="flex gap-1">

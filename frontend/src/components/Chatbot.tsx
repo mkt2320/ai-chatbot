@@ -3,6 +3,7 @@ import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import { sendChatMessage } from "../api/chat";
+import { FaRobot } from "react-icons/fa";
 
 export type Message = {
   sender: "bot" | "user";
@@ -22,7 +23,9 @@ const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState<Message[]>([defaultBotIntro]);
   const [showTyping, setShowTyping] = useState(false);
 
-  const toggleChat = () => setIsOpen(true);
+  const toggleChat = () => {
+    setIsOpen(true);
+  };
 
   const handleClose = () => {
     setIsOpen(false);
@@ -75,7 +78,7 @@ const Chatbot = () => {
         >
           <span className="sr-only">Open Chatbot</span>
           <span role="img" aria-label="chat">
-            💬
+            <FaRobot size={20} />
           </span>
         </button>
       ) : (
