@@ -15,7 +15,7 @@ const ChatMessages = ({ messages, showTyping }: ChatMessagesProps) => {
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50 text-sm">
+    <div className="flex-1 overflow-y-auto p-4 pb-16 space-y-6 bg-gray-50 text-sm">
       {messages.map((msg, i) => (
         <MessageBubble
           key={i}

@@ -8,7 +8,7 @@ module.exports = {
     extend: {
       colors: {
         nestle: "#2A528B",
-        grey: "#F3F4F6"
+        grey: "#e4e4e7"
       },
       animation: {
       'fade-in': 'fadeIn 0.3s ease-out',

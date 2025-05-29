@@ -12,12 +12,12 @@ const MessageBubble = ({ sender, text, references }: MessageBubbleProps) => {
   return (
     <div className={`w-full flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div className="relative max-w-[80%]">
-        {/* Avatar - tighter overlap */}
+        {/* Avatar - overlaps top edge of bubble */}
         <div
-          className={`absolute w-7 h-7 rounded-full flex items-center justify-center ${
+          className={`absolute z-10 w-7 h-7 rounded-full flex items-center justify-center ${
             isUser
-              ? "top-[0px] right-[-9px] bg-gray-300 text-black"
-              : "top-[0px] left-[-9px] bg-nestle text-white"
+              ? "right-[-10px] top-[-10px] bg-gray-300 text-black"
+              : "left-[-10px] top-[-10px] bg-nestle text-white"
           }`}
         >
           {isUser ? <FaUserCircle size={14} /> : <FaRobot size={14} />}
@@ -25,10 +25,10 @@ const MessageBubble = ({ sender, text, references }: MessageBubbleProps) => {
 
         {/* Message Bubble */}
         <div
-          className={`break-words px-4 py-2 mt-3 rounded-lg whitespace-pre-wrap ${
+          className={`relative z-0 break-words px-4 py-3 rounded-lg whitespace-pre-wrap ${
             isUser
-              ? "bg-[#F3F4F6] text-[#416497] text-left rounded-br-none"
-              : "bg-nestle text-white text-left rounded-bl-none"
+              ? "bg-[#e4e4e7] text-[#416497] text-left"
+              : "bg-nestle text-white text-left"
           }`}
         >
           {text}
@@ -45,7 +45,7 @@ const MessageBubble = ({ sender, text, references }: MessageBubbleProps) => {
                   href={ref}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-4 h-7 flex items-center justify-center text-xs font-semibold text-white bg-nestle rounded-md border-b-2 border-white hover:opacity-90 transition"
+                  className="relative z-30 w-4 h-7 flex items-center justify-center text-xs font-semibold text-white bg-nestle rounded-md border-b-2 border-white hover:opacity-90 transition"
                 >
                   {idx + 1}
                 </a>
