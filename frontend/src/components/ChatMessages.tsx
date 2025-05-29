@@ -22,6 +22,7 @@ const ChatMessages = ({ messages, showTyping }: ChatMessagesProps) => {
           sender={msg.sender}
           text={msg.text}
           references={msg.references}
+          pulse={msg.pulse}
         />
       ))}
       {showTyping && (

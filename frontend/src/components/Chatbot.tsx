@@ -2,13 +2,14 @@ import { useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
-import { sendChatMessage } from "../api/chat";
+import { sendChatMessage, refreshChatbotData } from "../api/chat";
 import { FaRobot } from "react-icons/fa";
 
 export type Message = {
   sender: "bot" | "user";
   text: string;
   references?: string[];
+  pulse?: boolean;
 };
 
 const defaultBotIntro: Message = {
@@ -22,10 +23,9 @@ const Chatbot = () => {
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState<Message[]>([defaultBotIntro]);
   const [showTyping, setShowTyping] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const toggleChat = () => {
-    setIsOpen(true);
-  };
+  const toggleChat = () => setIsOpen(true);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -33,12 +33,10 @@ const Chatbot = () => {
     setInput("");
   };
 
-  const handleMinimize = () => {
-    setIsOpen(false);
-  };
+  const handleMinimize = () => setIsOpen(false);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isRefreshing) return;
 
     const userMessage: Message = { sender: "user", text: input };
     setChatHistory((prev) => [...prev, userMessage]);
@@ -47,7 +45,6 @@ const Chatbot = () => {
 
     try {
       const { reply, references } = await sendChatMessage(input);
-
       const botMessage: Message = {
         sender: "bot",
         text: reply,
@@ -68,6 +65,42 @@ const Chatbot = () => {
     }
   };
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+
+    setChatHistory((prev) => [
+      ...prev,
+      {
+        sender: "bot",
+        text: "Refreshing content... Please wait a moment...",
+        pulse: true,
+      },
+    ]);
+
+    try {
+      await refreshChatbotData();
+
+      setTimeout(() => {
+        setChatHistory((prev) =>
+          prev
+            .map((msg) => (msg.pulse ? { ...msg, pulse: false } : msg))
+            .concat({
+              sender: "bot",
+              text: "Smartie is ready again! Ask me anything.",
+            })
+        );
+        setIsRefreshing(false);
+      }, 10000);
+    } catch (err) {
+      console.error("Refresh failed", err);
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: "bot", text: "Refresh failed. Please try again later." },
+      ]);
+      setIsRefreshing(false);
+    }
+  };
+
   return (
     <div className="absolute bottom-4 right-4 z-50">
       {!isOpen ? (
@@ -82,13 +115,18 @@ const Chatbot = () => {
           </span>
         </button>
       ) : (
-        <div className="w-96 max-w-[90vw] h-[500px] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-300 animate-slide-up">
-          <ChatHeader onClose={handleClose} onMinimize={handleMinimize} />
+        <div className="w-96 max-w-[90vw] h-[500px] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-300 transform transition-all duration-300 ease-out translate-y-0 opacity-100">
+          <ChatHeader
+            onClose={handleClose}
+            onMinimize={handleMinimize}
+            onRefresh={handleRefresh}
+          />
           <ChatMessages messages={chatHistory} showTyping={showTyping} />
           <ChatInput
             input={input}
             onInputChange={setInput}
             onSend={handleSend}
+            disabled={isRefreshing}
           />
         </div>
       )}
