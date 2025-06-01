@@ -18,16 +18,24 @@ summarizer = pipeline("summarization", model="t5-small", tokenizer="t5-small")
 
 # Load metadata
 META_PATH = Path("embeddings/index_metadata.json")
-with open(META_PATH, "r", encoding="utf-8") as f:
-    metadata = json.load(f)
+metadata = []
+stored_embeddings = np.array([])
 
-# Normalize stored embeddings
-stored_embeddings = np.array([entry["embedding"] for entry in metadata]).astype(
-    "float32"
-)
-stored_embeddings = stored_embeddings / np.linalg.norm(
-    stored_embeddings, axis=1, keepdims=True
-)
+if META_PATH.exists() and META_PATH.stat().st_size > 0:
+    with open(META_PATH, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
+
+    # Normalize stored embeddings
+    stored_embeddings = np.array([entry["embedding"] for entry in metadata]).astype(
+        "float32"
+    )
+    stored_embeddings = stored_embeddings / np.linalg.norm(
+        stored_embeddings, axis=1, keepdims=True
+    )
+else:
+    print(
+        "Warning: embeddings/index_metadata.json not found or empty. Run the /refresh endpoint first."
+    )
 
 # Constants
 SIMILARITY_THRESHOLD = 0.4
