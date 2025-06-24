@@ -11,7 +11,7 @@ const ChatHeader = ({ onClose, onMinimize, onRefresh }: ChatHeaderProps) => (
   <div className="bg-nestle text-white p-4 flex items-center justify-between">
     <div className="flex items-center gap-2 font-semibold text-lg">
       <FaRobot size={20} />
-      SMARTIE
+      QueryLink
     </div>
     <div className="flex items-center gap-3">
       <button onClick={onRefresh} title="Refresh" className="hover:scale-105">

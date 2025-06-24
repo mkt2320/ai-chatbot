@@ -14,7 +14,7 @@ export type Message = {
 
 const defaultBotIntro: Message = {
   sender: "bot",
-  text: `Hey! I'm Smartie, your personal MadeWithNestlé assistant.  
+  text: `Hey! I'm QueryLink bot, your personal assistant.  
 Ask me anything, and I’ll quickly search the entire site to find the answers you need!`,
 };
 
@@ -86,7 +86,7 @@ const Chatbot = () => {
             .map((msg) => (msg.pulse ? { ...msg, pulse: false } : msg))
             .concat({
               sender: "bot",
-              text: "Smartie is ready again! Ask me anything.",
+              text: "QueryLink bot is ready again! Ask me anything.",
             })
         );
         setIsRefreshing(false);

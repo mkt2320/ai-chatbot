@@ -27,7 +27,7 @@ const ChatMessages = ({ messages, showTyping }: ChatMessagesProps) => {
       ))}
       {showTyping && (
         <div className="text-xs text-gray-500 pl-2 animate-pulse">
-          Smartie is typing...
+          QueryLink is typing...
         </div>
       )}
       <div ref={endRef} />
