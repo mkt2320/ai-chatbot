@@ -1,4 +1,4 @@
-# Nestlé AI Chatbot
+# QueryLink AI Chatbot
 
 An AI-powered chatbot that answers user queries about content on the [Made with Nestlé](https://www.madewithnestle.ca/) website. This project includes dynamic web scraping, natural language summarization with contextual references, and a customizable GraphRAG module to enhance reasoning.
 

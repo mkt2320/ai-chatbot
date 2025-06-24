@@ -45,6 +45,28 @@ QUESTION_PATTERNS = re.compile(
     re.IGNORECASE,
 )
 
+SMALL_TALK_PATTERNS = {
+    "hello": "Hello! How can I help you today?",
+    "hi": "Hi there! What can I assist you with?",
+    "how are you": "I'm just a bot, but I'm here and ready to help!",
+    "what's up": "I'm here to answer your questions. Feel free to ask!",
+    "thank you": "You're welcome!",
+    "thanks": "Happy to help!",
+    "bye": "Goodbye! Have a great day!",
+    "good morning": "Good morning! Hope you're having a great start to your day.",
+    "good evening": "Good evening! How can I assist you?",
+    "who made you?": "I was developed by a human... but don't worry, I'm well trained!",
+    "tell me a joke": "Why do programmers hate nature? Too many bugs!",
+    "who are you?": "I'm your friendly AI chatbot, here to assist you with your questions."
+}
+
+
+def detect_small_talk(query: str) -> str:
+    lower_query = query.lower().strip()
+    for pattern, response in SMALL_TALK_PATTERNS.items():
+        if lower_query == pattern:
+            return response
+    return ""
 
 @router.post("/chat", response_model=ChatbotResponse)
 def chatbot_endpoint(request: ChatbotRequest):
@@ -52,6 +74,11 @@ def chatbot_endpoint(request: ChatbotRequest):
     if not query:
         return ChatbotResponse(reply="Please enter a valid message.", references=[])
 
+    # Check for small talk
+    small_talk_response = detect_small_talk(query)
+    if small_talk_response:
+        return ChatbotResponse(reply=small_talk_response, references=[])
+    
     # Generate embedding for query
     query_vec = embedding_model.encode([query])[0]
     query_vec = query_vec / np.linalg.norm(query_vec)
@@ -96,7 +123,10 @@ def chatbot_endpoint(request: ChatbotRequest):
     known_node_ids = {"kitkat", "carnation", "sustainability", "nestle"}
     for node_id in known_node_ids:
         if node_id in query.lower():
-            graph_facts.extend(get_graph_facts(node_id))
+            try:
+                graph_facts.extend(get_graph_facts(node_id))
+            except Exception as e:
+                print(f"[Warning] Failed to fetch graph facts for '{node_id}': {e}")
 
     # Summarize extracted content
     combined_text = " ".join(text for text, _ in chunks)

@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        nestle: "#2A528B",
+        nestle: "#3a3a4a",
         grey: "#e4e4e7"
       },
       animation: {
